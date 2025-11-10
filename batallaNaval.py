@@ -51,9 +51,10 @@ def grillaVacía(cantidadDeFilas: int, cantidadDeColumnas: int) -> Grilla:
 
     res: Grilla = [] 
     
-    for _ in range(cantidadDeFilas):
+    for i in range(cantidadDeFilas):
         filaVacia: list[Celda] = []
-        for _ in range(cantidadDeColumnas):
+
+        for j in range(cantidadDeColumnas):
             filaVacia.append(VACÍO)
         res.append(filaVacia)
 
@@ -164,7 +165,7 @@ def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> b
     n1: int = 0
     n2: int = 0
     
-    # 1. Chequea tablero[1] (oponente J1) vs tableroOponente[0] (local J2)
+    #1 Chequea tablero[1] (oponente J1) vs tableroOponente[0] (local J2)
     i: int = 0
     for fila in tablero[1]: 
         j: int = 0
@@ -176,7 +177,7 @@ def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> b
             j += 1
         i += 1
 
-    # 2. Chequea tableroOponente[1] (oponente J2) vs tablero[0] (local J1)
+    #2 Chequea tableroOponente[1] (oponente J2) vs tablero[0] (local J1)
     i = 0
     for fila in tableroOponente[1]: 
         j = 0
@@ -188,7 +189,6 @@ def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> b
             j += 1
         i += 1
     
-    # CORRECCIÓN DE LÓGICA: Verifica si la diferencia absoluta entre ataques es 0 o 1.
     return (n1 == n2) or (n1 == n2 + 1) or (n2 == n1 + 1)
 
 
