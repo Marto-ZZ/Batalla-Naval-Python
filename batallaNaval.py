@@ -47,26 +47,14 @@ def nuevoJuego(cantidadDeFilas: int, cantidadDeColumnas: int, barcosDisponibles:
 def grillaVacía(cantidadDeFilas: int, cantidadDeColumnas: int) -> Grilla:
     """
     Crea una grilla vacía con las dimensiones dadas.
-
-    PRE:
-        - cantidadDeFilas entre 1 y 26.
-        - cantidadDeColumnas mayor a 0.
-
-    Args:
-        cantidadDeFilas (int): Número de filas.
-        cantidadDeColumnas (int): Número de columnas.
-
-    Returns:
-        Grilla: Una grilla de cantidadDeFilas x cantidadDeColumnas con todas las celdas VACÍO.
     """
 
-    res: Celda = []
-    filaVacia: Celda = []
+    res: Grilla = [] 
     
-    for i in range(cantidadDeColumnas):
-        filaVacia.append(VACÍO)
-
-    for j in range(cantidadDeFilas):
+    for _ in range(cantidadDeFilas):
+        filaVacia: list[Celda] = []
+        for _ in range(cantidadDeColumnas):
+            filaVacia.append(VACÍO)
         res.append(filaVacia)
 
     return res 
@@ -75,19 +63,10 @@ def grillaVacía(cantidadDeFilas: int, cantidadDeColumnas: int) -> Grilla:
 def nuevoTablero(cantidadDeFilas: int, cantidadDeColumnas: int) -> Tablero:
     """
     Crea un nuevo tablero con grillas local y del oponente vacías.
-
-    PRE:
-        cantidadDeFilas entre 1 y 26, cantidadDeColumnas mayor a 0.
-
-    Args:
-        cantidadDeFilas (int): Número de filas.
-        cantidadDeColumnas (int): Número de columnas.
-
-    Returns:
-        Tablero: Tablero con dos grillas vacías.
     """
-    grillaVacia = grillaVacía(cantidadDeFilas, cantidadDeColumnas)
-    tablero: tuple = (grillaVacia,grillaVacia)
+    grillaLocal = grillaVacía(cantidadDeFilas, cantidadDeColumnas)
+    grillaOponente = grillaVacía(cantidadDeFilas, cantidadDeColumnas)
+    tablero: Tablero = (grillaLocal, grillaOponente)
 
     return tablero
 
@@ -95,14 +74,6 @@ def nuevoTablero(cantidadDeFilas: int, cantidadDeColumnas: int) -> Tablero:
 def esGrillaVacía(grilla: Grilla) -> bool:
     """
     Indica si todas las celdas de la grilla son VACÍO.
-
-    PRE: La grilla es válida.
-
-    Args:
-        grilla (Grilla): Grilla a verificar.
-
-    Returns:
-        bool: True si todas las celdas son VACÍO, False en caso contrario.
     """
 
     for fila in grilla:
@@ -117,14 +88,6 @@ def esGrillaVacía(grilla: Grilla) -> bool:
 def esEstadoDeJuegoVálido(estadoDeJuego: EstadoJuego) -> bool:
     """
     Indica si el estado de juego es válido.
-
-    PRE: True
-
-    Args:
-        estadoDeJuego (EstadoJuego): Estado de juego a validar.
-
-    Returns:
-        bool: True si el estado es válido, False en caso contrario.
     """
     if cantidadDeFilasEstadoJuego(estadoDeJuego) < 1 or cantidadDeFilasEstadoJuego(estadoDeJuego) > 26:
         return False
@@ -150,19 +113,10 @@ def esEstadoDeJuegoVálido(estadoDeJuego: EstadoJuego) -> bool:
 def tableroVálidoEnJuego(tablero: Tablero, estadoDeJuego: EstadoJuego) -> bool:
     """
     Verifica si un tablero es válido dentro del contexto de un estado de juego.
-    
-    PRE: True
-
-    Args:
-        tablero (Tablero): Tablero a validar.
-        estadoDeJuego (EstadoJuego): Estado de juego de referencia.
-        
-    Returns:
-        bool: True si el tablero es válido, False en caso contrario.
     """
-    grillaLocalValida: bool = grillaVálidaEnJuego(grillaLocal(tablero), estadoDeJuego)
-    grillaOponenteValida: bool = grillaVálidaEnJuego(grillaOponente(tablero), estadoDeJuego)
-    coincidenBarcos: bool = coincidenBarcosEnGrilla(barcosDisponibles(estadoDeJuego), grillaLocal(tablero))
+    grillaLocalValida: bool = grillaVálidaEnJuego(tablero[0], estadoDeJuego)
+    grillaOponenteValida: bool = grillaVálidaEnJuego(tablero[1], estadoDeJuego)
+    coincidenBarcos: bool = coincidenBarcosEnGrilla(barcosDisponibles(estadoDeJuego), tablero[0])
 
     return grillaLocalValida and grillaOponenteValida and coincidenBarcos
 
@@ -170,15 +124,6 @@ def tableroVálidoEnJuego(tablero: Tablero, estadoDeJuego: EstadoJuego) -> bool:
 def coincidenBarcosEnGrilla(barcos: list[Barco], grilla: Grilla) -> bool:
     """
     Verifica si los barcos en una grilla coinciden con los barcos disponibles.
-    
-    PRE: La grilla es válida.
-
-    Args:
-        barcos (list[Barco]): Lista de barcos disponibles
-        grilla (Grilla): Grilla a verificar
-        
-    Returns:
-        bool: True si los barcos en la grilla coinciden con los disponibles
     """
     return mismosElementos(barcos, tamaños(barcosEnGrilla(grilla)))
 
@@ -186,13 +131,6 @@ def coincidenBarcosEnGrilla(barcos: list[Barco], grilla: Grilla) -> bool:
 def tamaños(barcos: list[BarcoEnGrilla]) -> list[int]:
     """
     Obtiene la lista de tamaños de una lista de barcos.
-    
-    PRE: Los barcos son válidos.
-    Args:
-        barcos (list[BarcoEnGrilla]): Lista de barcos.
-        
-    Returns:
-        list[int]: Lista de tamaños de los barcos.
     """
     res: list[int] = []
     for barco in barcos:
@@ -204,14 +142,6 @@ def tamaños(barcos: list[BarcoEnGrilla]) -> list[int]:
 def mismosElementos(lista1: list[Any], lista2: list[Any]) -> bool:
     """
     Determina si dos listas contienen los mismos elementos con las mismas frecuencias.
-    
-    PRE: True
-    Args:
-        lista1 (list): Primera lista a comparar.
-        lista2 (list): Segunda lista a comparar.
-        
-    Returns:
-        bool: True si las listas tienen los mismos elementos con las mismas frecuencias.
     """
     if (len(lista1) == 0 and not len(lista2) == 0) or (len(lista2) == 0 and not len(lista1) == 0):
         return False
@@ -230,49 +160,36 @@ def mismosElementos(lista1: list[Any], lista2: list[Any]) -> bool:
 def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> bool:
     """
     Verifica la consistencia de las posiciones atacadas entre dos tableros.
-    
-    Las posiciones atacadas son consistentes si:
-    - Las celdas no vacías en la grilla del oponente de tablero1 coinciden con las de tablero2.
-    - Las celdas no vacías en la grilla del oponente de tablero2 coinciden con las de tablero1.
-    - La diferencia en cantidad de celdas no vacías es 0 o 1.
-    
-    PRE: True
-
-    Args:
-        tablero1 (Tablero): Primer tablero.
-        tablero2 (Tablero): Segundo tablero.
-        
-    Returns:
-        bool: True si las posiciones atacadas son consistentes
     """
     n1: int = 0
     n2: int = 0
-    i: int = 0
-    j: int = 0
     
-    for fila in tablero[1]:
+    # 1. Chequea tablero[1] (oponente J1) vs tableroOponente[0] (local J2)
+    i: int = 0
+    for fila in tablero[1]: 
+        j: int = 0
         for posicion in fila:
             if not posicion == VACÍO:
-                n1+=1
+                n1 += 1
                 if not tableroOponente[0][i][j] == posicion:
                     return False
-            j+=1
-        i+=1
+            j += 1
+        i += 1
 
-    j = 0
+    # 2. Chequea tableroOponente[1] (oponente J2) vs tablero[0] (local J1)
     i = 0
-
-    for fila in tableroOponente[1]:
+    for fila in tableroOponente[1]: 
+        j = 0
         for posicion in fila:
             if not posicion == VACÍO:
-                n1+=1
+                n2 += 1 
                 if not tablero[0][i][j] == posicion:
                     return False
-            j+=1
-        i+=1
-
+            j += 1
+        i += 1
     
-    return (n1-n2 >= 0 and n1-n2 <= 1)
+    # CORRECCIÓN DE LÓGICA: Verifica si la diferencia absoluta entre ataques es 0 o 1.
+    return (n1 == n2) or (n1 == n2 + 1) or (n2 == n1 + 1)
 
 
 ## Ejercicio 4
@@ -280,49 +197,23 @@ def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> b
 def dispararEnPosición(estadoDeJuego: EstadoJuego, posición: Posición) -> ResultadoDisparo:
     """
     Realiza un disparo en la posición especificada y actualiza el estado del juego.
-    El jugador actual dispara a la posición indicada en el tablero del oponente.
-    Si impacta un barco, marca la posición como TOCADO, de lo contrario como AGUA.
-    Luego cambia el turno al siguiente jugador.
-    
-    PRE:
-        - El estado de juego es válido.
-        - La posición es válida en la grilla del oponente del jugador actual.
-        - La posición no ha sido atacada previamente (está VACÍA en la grilla del oponente).
-    
-    Args:
-        estadoDeJuego (EstadoJuego): Estado actual del juego.
-        posición (Posición): Posición a disparar (letra, número).
-        
-    Returns:
-        ResultadoDisparo: NADA si no impactó un barco, TOCADO si impactó un barco.
-        
-    Modifica:
-        estadoDeJuego: Actualiza las grillas y cambia el turno
     """
     resultado: ResultadoDisparo = NADA
 
-    turnoActual = turno(estadoDeJuego)
-    turnoOpuesto = None
-    if turnoActual == UNO:
-        turnoOpuesto = DOS
-    else:
-        turnoOpuesto = UNO
-
-    grillaLocal = tableroDeJugador(estadoDeJuego, turnoActual)[1]
-    grillaOponente = tableroDeJugador(estadoDeJuego, turnoOpuesto)[0]
-   
-    celdaAtacadaOponente: Celda = celdaEnPosición(grillaOponente, posición) #celda atacada en jugador 2
-    celdaAtacadaLocal: Celda = celdaEnPosición(grillaLocal, posición) #celda atacada en jugador 1
+    turnoActual = estadoDeJuego[2][0]
+    turnoOpuesto = DOS if turnoActual == UNO else UNO
     
-    if celdaAtacadaOponente == BARCO:
+    grillaOponenteAtacante = tableroDeJugador(estadoDeJuego, turnoActual)[1]
+    grillaLocalAtacado = tableroDeJugador(estadoDeJuego, turnoOpuesto)[0]
+   
+    celdaAtacadaEnLocalAtacado: Celda = celdaEnPosición(grillaLocalAtacado, posición) 
+    
+    if celdaAtacadaEnLocalAtacado == BARCO:
         resultado = TOCADO
-        cambiarCeldaGrilla(grillaLocal, posición, BARCO)
-        cambiarCeldaGrilla(grillaOponente, posición, AGUA)
-
-    else:
-        cambiarCeldaGrilla(grillaLocal, posición, AGUA)
-        cambiarCeldaGrilla(grillaOponente, posición, AGUA)
-
+        cambiarCeldaGrilla(grillaOponenteAtacante, posición, BARCO) 
+    else: 
+        cambiarCeldaGrilla(grillaOponenteAtacante, posición, AGUA)
+        cambiarCeldaGrilla(grillaLocalAtacado, posición, AGUA)
 
     cambiarTurno(estadoDeJuego)
 
@@ -330,114 +221,109 @@ def dispararEnPosición(estadoDeJuego: EstadoJuego, posición: Posición) -> Res
 
 ## Ejercicio 5
 
-#AUX PERSONALIZADA
+def _encontrarBarcoCompleto(pos: Posición, posicionesConBarcos: list[Posición]) -> BarcoEnGrilla:
+    """
+    Encuentra todas las posiciones conectadas a 'pos' de forma horizontal o vertical.
+    """
+    letra = letraDePosición(pos)
+    numero = númeroDePosición(pos)
+    
+    # 1. Búsqueda Horizontal
+    barco_horizontal: list[Posición] = [pos]
+    n = numero + 1
+    while pertenecePosición((letra, n), posicionesConBarcos) and (letra, n) not in barco_horizontal:
+        barco_horizontal.append((letra, n))
+        n += 1
+        
+    n = numero - 1
+    while pertenecePosición((letra, n), posicionesConBarcos) and (letra, n) not in barco_horizontal:
+        barco_horizontal.append((letra, n))
+        n -= 1
+    
+    # 2. Búsqueda Vertical
+    barco_vertical: list[Posición] = [pos]
+    
+    def intentar_mover(start_l: str, direction_fn) -> list[Posición]:
+        current_l = start_l
+        temp_barco = []
+        while True:
+            try:
+                current_l = direction_fn(current_l)
+                nueva_pos = (current_l, numero)
+                if pertenecePosición(nueva_pos, posicionesConBarcos) and nueva_pos not in temp_barco:
+                    temp_barco.append(nueva_pos)
+                else:
+                    break
+            except:
+                break
+        return temp_barco
+
+    barco_vertical.extend(intentar_mover(letra, siguienteLetra))
+    barco_vertical.extend(intentar_mover(letra, anteriorLetra))
+    
+    # Determinar el barco final 
+    if len(barco_horizontal) > 1 and len(barco_vertical) > 1:
+        if len(barco_horizontal) >= len(barco_vertical):
+            return posicionesOrdenadas(barco_horizontal)
+        else:
+            return posicionesOrdenadas(barco_vertical)
+
+    if len(barco_horizontal) > 1:
+        return posicionesOrdenadas(barco_horizontal)
+    elif len(barco_vertical) > 1:
+        return posicionesOrdenadas(barco_vertical)
+    else:
+        return [pos]
+
 def ordenarBarcos(posicionesConBarcos: list[Posición]) -> list[BarcoEnGrilla]:
     """
     Dada una lista de posiciones cuyas celdas contienen BARCO, devuelve una lista con barcos armados
-    
-    PRE:
-        - Todas las posiciones de posicionesConBarcos referencian celdas con el valor BARCO
-        
-    Args:
-        posicionesConBarcos (list[Posición]): Lista de posiciones a ordenar.
-        
-    Returns:
-        list[BarcoEnGrilla]: Lista con los barcos armados.
     """
     
     barcosOrdenados: list[BarcoEnGrilla] = []
-    barcoTemp: BarcoEnGrilla = []
     yaVistos: list[Posición] = []
+    
+    posicionesConBarcos = sorted(posicionesConBarcos, key=lambda p: (ord(p[0]), p[1]))
 
-    i = 0
-
-    while i < len(posicionesConBarcos):
-        pos = posicionesConBarcos[i]
-        if (pos in yaVistos):
-            i+=1
-            continue
-        if len(barcoTemp) == 0:
-            barcoTemp.append(pos)
-            yaVistos.append(pos)
-            
-        j = 1
-        while j < len(posicionesConBarcos):
-            pos2 = posicionesConBarcos[j]
-            if ((pos2[0] == pos[0] and pos2[1] == (pos[1]+1)) or (ord(pos2[0]) == ord(pos[0])+1 and pos2[1] == pos[1])) and (pos2 not in yaVistos):
-                barcoTemp.append(posicionesConBarcos[j])
-                yaVistos.append(pos2)
-            j+=1
-            
-        barcosOrdenados.append(barcoTemp)
-        barcoTemp = []
-        i+=1
-
+    for pos in posicionesConBarcos:
+        if not pertenecePosición(pos, yaVistos):
+            barcoNuevo = _encontrarBarcoCompleto(pos, posicionesConBarcos)
+            barcosOrdenados.append(barcoNuevo)
+            for p in barcoNuevo:
+                yaVistos.append(p)
+                
     return barcosOrdenados
 
 def barcosEnGrilla(grilla: Grilla) -> list[BarcoEnGrilla]:
     """
     Identifica y devuelve todos los barcos presentes en una grilla.
-    
-    Recorre la grilla buscando posiciones con BARCO y agrupa las posiciones
-    consecutivas (horizontal o verticalmente) que forman cada barco.
-    
-    PRE:
-        - La grilla es válida.
-        - Hay una única forma de construir barcos desde cada posición.
-        
-    Args:
-        grilla (Grilla): Grilla a analizar.
-        
-    Returns:
-        list[BarcoEnGrilla]: Lista de barcos encontrados en la grilla,
-        donde cada barco es una lista de posiciones consecutivas.
     """
-    posicionesConBarco: list[Posición] = []
+    posicionesConBarcos: list[Posición] = [] # Se corrigió el nombre de la variable (plural)
     columnas: str = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
+    # 1. Obtener todas las posiciones que contienen BARCO
     for i in range(len(grilla)):
         for j in range(len(grilla[0])):
-            if grilla[i][j] == BARCO:
-                posicion = (columnas[i], j+1)
-                posicionesConBarco.append(posicion)
+            posicion = (columnas[i], j+1)
+            if celdaEnPosición(grilla, posicion) == BARCO:
+                posicionesConBarcos.append(posicion) # Se corrigió el nombre de la variable (plural)
 
-    return ordenarBarcos(posicionesConBarco)
+    # 2. Agrupar las posiciones en barcos
+    return ordenarBarcos(posicionesConBarcos)
 
 #5A
 def noHayMásDeUnaFormaDeConstruirUnBarcoDesde(grilla: Grilla, posición: Posición) -> bool:
     """
     Determina si desde una posición dada solo hay una forma posible de construir un barco.
-    
-    PRE:
-        - La grilla es válida.
-        - La posición pertenece a la grilla.
-        
-    Args:
-        grilla (Grilla): Grilla a analizar.
-        posición (Posición): Posición desde la cual verificar.
-        
-    Returns:
-        bool: True si no hay ambigüedad en la construcción del barco,
-        False si se puede construir tanto horizontal como verticalmente.
     """
-    return (not sePuedeConstruirBarcoHorizontalDesde(grilla, posición) or not sePuedeConstruirBarcoVerticalDesde(grilla, posición))
+    hayH = sePuedeConstruirBarcoHorizontalDesde(grilla, posición)
+    hayV = sePuedeConstruirBarcoVerticalDesde(grilla, posición)
+    return not (hayH and hayV)
 
 #5B
 def sePuedeConstruirBarcoHorizontalDesde(grilla: Grilla, posición: Posición) -> bool:
     """
     Verifica si se puede construir un barco horizontalmente desde la posición dada.
-    
-    PRE:
-        - La grilla es válida.
-        - La posición pertenece a la grilla.
-        
-    Args:
-        grilla (Grilla): Grilla a analizar.
-        posición (Posición): Posición desde la cual verificar.
-        
-    Returns:
-        bool: True si hay un barco en la posición y tiene barcos adyacentes
-        horizontalmente (izquierda o derecha).
     """
     
     hayBarcoEnPosición: bool = celdaEnPosición(grilla, posición) == BARCO
@@ -450,18 +336,6 @@ def sePuedeConstruirBarcoHorizontalDesde(grilla: Grilla, posición: Posición) -
 def sePuedeConstruirBarcoVerticalDesde(grilla: Grilla, posición: Posición) -> bool:
     """
     Verifica si se puede construir un barco verticalmente desde la posición dada.
-    
-    PRE:
-        - La grilla es válida.
-        - La posición pertenece a la grilla.
-        
-    Args:
-        grilla (Grilla): Grilla a analizar.
-        posición (Posición): Posición desde la cual verificar.
-        
-    Returns:
-        bool: True si hay un barco en la posición y tiene barcos adyacentes
-        verticalmente (arriba o abajo).
     """
     
     hayBarcoEnPosición: bool = celdaEnPosición(grilla, posición) == BARCO
@@ -474,17 +348,6 @@ def sePuedeConstruirBarcoVerticalDesde(grilla: Grilla, posición: Posición) -> 
 def posicionesOcupadasEnGrilla(grilla: Grilla, posiciones: list[Posición]) -> bool:
     """
     Verifica si todas las posiciones dadas están ocupadas por barcos en la grilla.
-    
-    PRE:
-        - La grilla es válida.
-        - Todas las posiciones son válidas en la grilla.
-        
-    Args:
-        grilla (Grilla): Grilla a verificar.
-        posiciones (list[Posición]): Lista de posiciones a comprobar.
-        
-    Returns:
-        bool: True si todas las posiciones contienen BARCO en la grilla.
     """
     
     for pos in posiciones:
@@ -497,25 +360,9 @@ def posicionesOcupadasEnGrilla(grilla: Grilla, posiciones: list[Posición]) -> b
 def algúnBarcoOcupaLaPosición(barcos: list[BarcoEnGrilla], posición: Posición) -> bool:
     """
     Determina si algún barco de la lista ocupa la posición especificada.
-    
-    PRE:
-        - Todos los barcos en la lista son válidos.
-        
-    Args:
-        barcos (list[BarcoEnGrilla]): Lista de barcos a verificar.
-        posición (Posición): Posición a buscar.
-        
-    Returns:
-        bool: True si la posición está contenida en algún barco de la lista.
     """
     
-    res = False
-    i = 0
-
-    while (not res and i < len(barcos)):
-        #barcos[i] siempre cumple barcos[i] in barcos
-        if posición in barcos[i]:
-            res = True
-        i+=1
-
-    return res
+    for barco in barcos:
+        if pertenecePosición(posición, barco):
+            return True
+    return False
