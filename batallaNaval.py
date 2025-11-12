@@ -144,11 +144,13 @@ def mismosElementos(lista1: list[Any], lista2: list[Any]) -> bool:
     """
     Determina si dos listas contienen los mismos elementos con las mismas frecuencias.
     """
-    if (len(lista1) == 0 and not len(lista2) == 0) or (len(lista2) == 0 and not len(lista1) == 0):
+    if len(lista1) != len(lista2):
         return False
 
+    lista_completa = lista1 + lista2
+    
     for elemento in lista1:
-        if not cantidadDeApariciones(elemento, lista1) == cantidadDeApariciones(elemento, lista2):
+        if cantidadDeApariciones(elemento, lista1) != cantidadDeApariciones(elemento, lista2):
             return False
         
     for elemento in lista2:
@@ -189,7 +191,7 @@ def coincidenPosicionesAtacadas(tablero: Tablero, tableroOponente: Tablero) -> b
             j += 1
         i += 1
     
-    return (n1 == n2) or (n1 == n2 + 1) or (n2 == n1 + 1)
+    return (n1 == n2) or (n1 == n2 + 1)
 
 
 ## Ejercicio 4

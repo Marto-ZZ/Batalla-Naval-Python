@@ -89,7 +89,7 @@ class nuevoJuego_Test(unittest.TestCase):
         
         juego = nuevoJuego(2,2,[2])
         
-        # Se asegura que las 4 grillas sean estructuralmente iguales a la vacía 2x2
+        # Asegura que las 4 grillas sean estructuralmente iguales a la vacía 2x2
         self.assertEqual(juego[0], (2,2))
         self.assertEqual(juego[1], [2])
         self.assertEqual(juego[2], [UNO])
@@ -99,7 +99,7 @@ class nuevoJuego_Test(unittest.TestCase):
         self.assertEqual(juego[4][0], grilla_vacia_2x2) # Grilla local J2
         self.assertEqual(juego[4][1], grilla_vacia_2x2) # Grilla oponente J2
 
-        # Se asegura que las grillas sean objetos independientes (no-aliasing)
+        # Asegura que las grillas sean objetos independientes
         self.assertIsNot(juego[3][0], juego[3][1])
         self.assertIsNot(juego[4][0], juego[4][1])
         self.assertIsNot(juego[3][0], juego[4][0])
@@ -118,22 +118,20 @@ class nuevoJuego_Test(unittest.TestCase):
         self.assertEqual(grillaVacía(3,1), grilla_resultado)
 
     def test_tablero_2x2(self):
-        # Se verifica que el tablero se crea con grillas vacías no aliased
         tablero = nuevoTablero(2,2)
         grilla_vacia_2x2 = [[VACÍO, VACÍO],[VACÍO, VACÍO]]
         
         self.assertEqual(tablero[0], grilla_vacia_2x2)
         self.assertEqual(tablero[1], grilla_vacia_2x2)
-        self.assertIsNot(tablero[0], tablero[1]) # ¡Lo más importante!
+        self.assertIsNot(tablero[0], tablero[1])
 
     def test_tablero_1x3(self):
-        # Se verifica que el tablero se crea con grillas vacías no aliased
         tablero = nuevoTablero(1,3)
         grilla_vacia_1x3 = [[VACÍO, VACÍO, VACÍO]]
 
         self.assertEqual(tablero[0], grilla_vacia_1x3)
         self.assertEqual(tablero[1], grilla_vacia_1x3)
-        self.assertIsNot(tablero[0], tablero[1]) # ¡Lo más importante!
+        self.assertIsNot(tablero[0], tablero[1])
 
     def test_grilla_totalmente_vacia_2x2(self):
         grilla = [[VACÍO, VACÍO],[VACÍO, VACÍO]]
@@ -159,7 +157,7 @@ class nuevoJuego_Test(unittest.TestCase):
 
 # Tests Ejercicio 3
 class esEstadoDeJuegoVálido_Test(unittest.TestCase):
-    def test_grilla_DOS_local_no_coincide_con_disponibles(self): # la grillaDOSlocal tiene un solo barco de tamaño 3, en lugar de dos de tamaño 2.
+    def test_grilla_DOS_local_no_coincide_con_disponibles(self): # la grillaDOSlocal tiene un solo barco de tamaño 3, en lugar de dos de tamaño 2
         grillaUnoLocal = [[VACÍO, VACÍO, VACÍO, VACÍO],
                           [BARCO, VACÍO, VACÍO, VACÍO],
                           [BARCO, VACÍO, BARCO, VACÍO],
@@ -207,7 +205,7 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
         self.assertFalse(tableroVálidoEnJuego(tablero_barco_3,estado_3x2))
 
     def test_coinciden_perfectamente(self):
-        # Grilla compleja: barcos de tamaños 3 (B4-B6), 2 (D3-D4), 2 (D6-E6), 3 (D1-C1-B1)
+        # Grilla compleja
         grilla: Grilla = [[VACÍO, VACÍO, VACÍO, VACÍO, VACÍO, VACÍO, VACÍO],
                           [BARCO, VACÍO, VACÍO, BARCO, BARCO, BARCO, VACÍO],
                           [BARCO, VACÍO, VACÍO, VACÍO, VACÍO, VACÍO, VACÍO],
@@ -320,8 +318,9 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
         tablero2= (j2_local, j2_oponente)
 
         # Si J2 dispara y toca un barco en (A,1)
-        j2_oponente[0][0] = BARCO # J2 marca el impacto
-        j1_local[0][0] = BARCO     # J1 mantiene el BARCO (solo fue impactado)
+        j1_oponente[0][1] = AGUA # J1 falla
+        j2_local[0][1] = AGUA     # J2 marca su ataque en tu local
+        j2_oponente[0][0] = BARCO   #Ataque de J2
         self.assertTrue(coincidenPosicionesAtacadas(tablero1, tablero2))
 
     def test_j1_oponente_no_coincide_con_j2_local(self):
@@ -332,7 +331,7 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
         tablero1 = (j1_local, j1_oponente)
         tablero2= (j2_local, j2_oponente)
 
-        # Discrepancia: J1 marca impacto (BARCO), pero J2 marcó AGUA en su local.
+        # J1 marca impacto (BARCO), pero J2 marcó AGUA en su local
         j1_oponente[0][0] = BARCO
         j2_local[0][0] = AGUA
         self.assertFalse(coincidenPosicionesAtacadas(tablero1, tablero2))
@@ -354,8 +353,7 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
 
     def test_tablero_no_valido(self):
         tablero = nuevoTablero(3,3)
-        # La grilla local (tablero[0]) no es válida (e.g., filas de distinta longitud)
-        # (Se asume que la implementación de esGrillaVálida detecta esto)
+        # La grilla local (tablero[0]) no es válida
         estado = ((3,3), [3, 1], [UNO], (tablero[0], [[VACÍO,VACÍO,VACÍO]]), tablero)
         self.assertFalse(esEstadoDeJuegoVálido(estado))
 
@@ -364,8 +362,8 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
         grilla_oponente_valida = [[VACÍO, VACÍO],[VACÍO, VACÍO]]
         tablero_valido = (grilla_valida, grilla_oponente_valida)
         
-        # Simula: J1 dispara y marca AGUA en (A,2) de su oponente (tablero[1]), 
-        # pero J2 tiene BARCO en (A,2) de su local (tablero_valido[0]). No coinciden.
+        # J1 dispara y marca AGUA en (A,2) de su oponente (tablero[1])
+        # pero J2 tiene BARCO en (A,2) de su local (tablero_valido[0])
         tablero_valido_mutado = (grilla_valida, [[VACÍO, AGUA],[VACÍO, VACÍO]])
         estado = ((2,2),[2],[UNO],tablero_valido_mutado,tablero_valido)
         self.assertFalse(esEstadoDeJuegoVálido(estado))
@@ -378,8 +376,8 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
         tablero1 = (j1_local, j1_oponente)
         tablero2= (j2_local, j2_oponente)
         
-        # J2 atacó (A,2) y marcó AGUA. J1 local en (A,2) DEBE ser AGUA o BARCO, no VACÍO.
-        # En este caso J1 local es VACÍO, por lo que no coincide.
+        # J2 atacó (A,2) y marcó AGUA. J1 local en (A,2) DEBE ser AGUA o BARCO, no VACÍO
+        # En este caso J1 local es VACÍO, por lo que no coincide
         self.assertFalse(coincidenPosicionesAtacadas(tablero1, tablero2))
 
     def test_estado_de_juego_valido(self):
@@ -400,12 +398,12 @@ class esEstadoDeJuegoVálido_Test(unittest.TestCase):
 class DispararEnPosición_Test(unittest.TestCase):
     def test_disparo_en_posicion_vacia(self):
         estado = nuevoJuego(2,2,[2])
-        # Estado inicial: J1 turno, J2 local vacío.
+        # J1 turno, J2 local vacío.
         
-        # Preparación: J2 local tiene un barco en (A,1). (B,2) sigue VACÍO.
+        # Preparación: J2 local tiene un barco en (A,1). (B,2) sigue VACÍO
         estado[4][0][0][0] = BARCO 
         
-        # Disparo: J1 (UNO) dispara a ("B", 2). J2 local en (B,2) es VACÍO. Resultado: NADA.
+        # J1 (UNO) dispara a ("B", 2). J2 local en (B,2) es VACÍO
         resultado = dispararEnPosición(estado, ("B", 2)) 
         
         self.assertEqual(resultado, NADA)
@@ -415,26 +413,26 @@ class DispararEnPosición_Test(unittest.TestCase):
 
     def test_disparo_a_barco(self):
         estado = nuevoJuego(2,2,[2])
-        # Preparación: J2 local tiene un barco en (A,1).
+        # J2 local tiene un barco en (A,1).
         estado[4][0][0][0] = BARCO 
         
-        # Disparo: J1 (UNO) dispara a ("A", 1). J2 local en (A,1) es BARCO. Resultado: TOCADO.
+        # J1 (UNO) dispara a ("A", 1). J2 local en (A,1) es BARCO. Resultado: TOCADO.
         resultado = dispararEnPosición(estado, ("A", 1)) 
         
         self.assertEqual(resultado, TOCADO)
         self.assertEqual(estado[2], [DOS]) # Turno cambia a DOS
-        self.assertEqual(estado[4][0][0][0], BARCO) # Local J2: sigue siendo BARCO
-        self.assertEqual(estado[3][1][0][0], BARCO) # Oponente J1: BARCO
+        self.assertEqual(estado[4][0][0][0], BARCO) # Local J2 sigue siendo BARCO
+        self.assertEqual(estado[3][1][0][0], BARCO) # Oponente J1 es BARCO
 
     def test_disparo_en_ultimo_barco_fila(self):
         estado = nuevoJuego(2,2,[2])
-        # Preparación: J2 local tiene un barco en (A,1).
+        # J2 local tiene un barco en (A,1).
         estado[4][0][0][0] = BARCO
         
         # CORRECCIÓN DE ERROR: Cambiar el turno para simular que J2 dispara a J1.
         estado[2][0] = DOS 
         
-        # Disparo: J2 (DOS) dispara a ("A", 2). J1 local en (A,2) es VACÍO. Resultado: NADA.
+        # J2 (DOS) dispara a ("A", 2). J1 local en (A,2) es VACÍO. Resultado: NADA.
         resultado = dispararEnPosición(estado, ("A", 2)) 
         
         self.assertEqual(resultado, NADA)
@@ -444,13 +442,13 @@ class DispararEnPosición_Test(unittest.TestCase):
 
     def test_turno_inicial_dos(self):
         estado = nuevoJuego(2,2,[2])
-        # Preparación: J1 local tiene un barco en (A,1).
+        # J1 local tiene un barco en (A,1)
         estado[3][0][0][0] = BARCO
         
-        # Simular que J2 comienza el turno (J1 estaba antes, pero el test lo hace así)
+        # J2 comienza el turno (J1 estaba antes, pero el test lo hace así)
         estado[2][0] = DOS
         
-        # Disparo: J2 (DOS) dispara a ("A", 1). J1 local en (A,1) es BARCO. Resultado: TOCADO.
+        # Disparo: J2 (DOS) dispara a ("A", 1). J1 local en (A,1) es BARCO
         resultado = dispararEnPosición(estado, ("A",1))
         
         self.assertEqual(resultado, TOCADO)
